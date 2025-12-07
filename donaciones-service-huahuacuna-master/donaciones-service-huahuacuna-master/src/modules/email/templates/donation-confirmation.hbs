@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Donación</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 30px 20px; text-align: center; }
+    .header h1 { margin: 0; font-size: 24px; }
+    .content { padding: 30px 20px; }
+    .donation-details { background: #f8f9fa; border-left: 4px solid #667eea; padding: 15px; margin: 20px 0; }
+    .donation-details h3 { margin-top: 0; color: #667eea; }
+    .detail-row { margin: 10px 0; }
+    .detail-label { font-weight: bold; color: #555; }
+    .detail-value { color: #333; }
+    .cta-button { display: inline-block; background: #667eea; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+    .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>¡Gracias por tu Donación!</h1>
+    </div>
+    <div class="content">
+      <p>Hola {{donorName}},</p>
+
+      <p>Hemos recibido tu intención de donación. Tu transacción está siendo procesada a través de PSE.</p>
+
+      <div class="donation-details">
+        <h3>Detalles de la Donación</h3>
+        <div class="detail-row">
+          <span class="detail-label">Monto:</span>
+          <span class="detail-value">{{amount}}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">ID de Transacción:</span>
+          <span class="detail-value">{{transactionId}}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value">{{donationDate}}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Proyecto:</span>
+          <span class="detail-value">{{projectName}}</span>
+        </div>
+        {{#if message}}
+        <div class="detail-row">
+          <span class="detail-label">Tu mensaje:</span>
+          <span class="detail-value">"{{message}}"</span>
+        </div>
+        {{/if}}
+      </div>
+
+      <p>Una vez que tu pago sea confirmado por PSE, recibirás un recibo digital con todos los detalles de tu donación.</p>
+
+      <p style="text-align: center;">
+        <a href="{{appUrl}}/donations/my-donations" class="cta-button">Ver Mis Donaciones</a>
+      </p>
+
+      <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+
+      <p>Con gratitud,<br><strong>Fundación Huahuacuna</strong></p>
+    </div>
+    <div class="footer">
+      <p>© {{year}} Fundación Huahuacuna. Todos los derechos reservados.</p>
+      <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado de Donación</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; padding: 30px 20px; text-align: center; }
+    .header h1 { margin: 0; font-size: 24px; }
+    .content { padding: 30px 20px; }
+    .info-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; }
+    .detail-row { margin: 10px 0; }
+    .detail-label { font-weight: bold; color: #555; }
+    .cta-button { display: inline-block; background: #667eea; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+    .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Información sobre tu Donación</h1>
+    </div>
+    <div class="content">
+      <p>Hola {{donorName}},</p>
+
+      <div class="info-box">
+        <p><strong>Lo sentimos,</strong> no pudimos procesar tu donación en este momento.</p>
+      </div>
+
+      <p>Los detalles de la transacción son:</p>
+
+      <div class="detail-row">
+        <span class="detail-label">Monto:</span> {{amount}}
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">ID de Transacción:</span> {{transactionId}}
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Fecha:</span> {{donationDate}}
+      </div>
+
+      <p>Esto puede deberse a:</p>
+      <ul>
+        <li>Fondos insuficientes en la cuenta</li>
+        <li>Problema con la entidad bancaria</li>
+        <li>Cancelación de la transacción</li>
+        <li>Timeout en el proceso de pago</li>
+      </ul>
+
+      <p>Si deseas intentar nuevamente, puedes hacer clic en el siguiente botón:</p>
+
+      <p style="text-align: center;">
+        <a href="{{appUrl}}/donations" class="cta-button">Intentar Nuevamente</a>
+      </p>
+
+      <p>Si crees que esto es un error o necesitas ayuda, por favor contáctanos.</p>
+
+      <p>Saludos cordiales,<br><strong>Fundación Huahuacuna</strong></p>
+    </div>
+    <div class="footer">
+      <p>© {{year}} Fundación Huahuacuna. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</body>
+</html>

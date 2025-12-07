@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum DonationType {
+  MONETARY      // Donación monetaria (PSE u otros)
+  IN_KIND       // Donación en especie (física)
+}
+
+enum PaymentMethod {
+  PSE           // Pago electrónico PSE
+  BANK_TRANSFER // Transferencia bancaria
+  CASH          // Efectivo
+  IN_KIND       // En especie
+}
+
+enum DonationStatus {
+  PENDING       // Pendiente de confirmación
+  APPROVED      // Aprobada y confirmada
+  REJECTED      // Rechazada
+  CANCELLED     // Cancelada
+}
+
+// ============================================================================
+// MODELS
+// ============================================================================
+
+/// Modelo de Donación Monetaria
+model Donation {
+  id                  Int              @id @default(autoincrement())
+
+  // Tipo y método
+  type                DonationType
+  paymentMethod       PaymentMethod
+  status              DonationStatus   @default(PENDING)
+
+  // Monto (en centavos para evitar problemas de punto flotante)
+  amount              Int              // En centavos COP (ej: 10000 = $100.00)
+  currency            String           @default("COP")
+
+  // Información del donante
+  donorUserId         Int?             // Si el donante está registrado
+  donorName           String
+  donorEmail          String
+  donorPhone          String?
+  donorDocumentType   String?          // CC, NIT, etc.
+  donorDocument       String?          // Para certificado tributario
+  donorAddress        String?
+
+  // Proyecto destino (opcional)
+  projectId           Int?             // Si la donación es para un proyecto específico
+  projectName         String?          // Nombre del proyecto
+
+  // Información de pago
+  transactionId       String           @unique  // Número único de transacción
+  pseReference        String?          // Referencia de PSE
+  pseApprovalCode     String?          // Código de aprobación PSE
+  pseTransactionDate  DateTime?        // Fecha de transacción en PSE
+
+  // Para donaciones en especie
+  inKindDescription   String?          @db.Text // Descripción de los artículos
+  inKindEstimatedValue Int?            // Valor estimado en centavos
+
+  // Mensaje del donante
+  message             String?          @db.Text
+  isAnonymous         Boolean          @default(false)
+
+  // Certificado tributario
+  certificateGenerated Boolean         @default(false)
+  certificateUrl      String?          // URL del PDF generado
+  certificateNumber   String?          @unique // Número de certificado
+
+  // Metadata
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  approvedAt          DateTime?        // Fecha de aprobación
+  approvedBy          Int?             // userId del admin que aprobó (si es manual)
+
+  @@index([donorUserId])
+  @@index([status])
+  @@index([transactionId])
+  @@index([createdAt])
+  @@index([donorEmail])
+  @@index([projectId])
+  @@map("donations")
+}
+
+/// Configuración de información de donaciones (para RF-033)
+model DonationInfo {
+  id                  Int              @id @default(autoincrement())
+
+  // Contenido
+  title               String
+  description         String           @db.Text
+  importance          String           @db.Text
+  destination         String           @db.Text
+  modalities          String           @db.Text
+
+  // Call to action
+  ctaTitle            String
+  ctaDescription      String
+  ctaButtonText       String
+
+  // Estadísticas de impacto
+  totalDonationsCount Int              @default(0)
+  totalAmount         Int              @default(0) // En centavos
+  beneficiariesCount  Int              @default(0)
+
+  // Para donaciones en especie
+  neededItems         String[]         // Lista de artículos necesitados
+  contactAddress      String?
+  contactPhone        String?
+  contactEmail        String?
+  scheduleInfo        String?          // Horarios de atención
+
+  // Metadata
+  isActive            Boolean          @default(true)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  updatedBy           Int              // userId del admin
+
+  @@map("donation_info")
+}
+
+/// Testimonios de donantes
+model DonorTestimonial {
+  id                  Int              @id @default(autoincrement())
+
+  donorName           String
+  donorPhoto          String?
+  testimonial         String           @db.Text
+  donationAmount      Int?             // Monto donado (opcional, en centavos)
+  
+  isPublished         Boolean          @default(false)
+  publishedAt         DateTime?
+
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  createdBy           Int              // userId del admin
+
+  @@map("donor_testimonials")
+}
+
+/// Configuración de PSE
+model PseConfiguration {
+  id                  Int              @id @default(autoincrement())
+
+  // Credenciales PSE
+  merchantId          String
+  apiKey              String           // Encriptado
+  apiSecret           String           // Encriptado
+  apiUrl              String           // URL de la API de PSE
+  returnUrl           String           // URL de retorno después del pago
+  
+  // Configuración
+  minAmount           Int              @default(1000000) // $10.000 COP en centavos
+  isActive            Boolean          @default(true)
+  isTestMode          Boolean          @default(true)
+
+  // Metadata
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  updatedBy           Int
+
+  @@map("pse_configuration")
+}
